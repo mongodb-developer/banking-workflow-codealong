@@ -2,6 +2,7 @@ from django import forms
 from .models import BankingDocument
 
 
+# Form for uploading a new banking document.
 class DocumentUploadForm(forms.ModelForm):
     class Meta:
         model = BankingDocument
@@ -14,6 +15,8 @@ class DocumentUploadForm(forms.ModelForm):
         }
 
 
+
+# Form for the semantic search page.
 class SearchForm(forms.Form):
     query = forms.CharField(
         max_length=500,
@@ -34,6 +37,8 @@ class SearchForm(forms.Form):
     )
 
 
+
+# Form for the RAG retrieval assistant.
 class RAGQueryForm(forms.Form):
     question = forms.CharField(
         max_length=1000,

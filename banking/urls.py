@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+# Namespace for all banking app URLs (e.g. {% url 'banking:document_list' %})
 app_name = 'banking'
 
 urlpatterns = [

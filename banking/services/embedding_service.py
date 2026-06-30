@@ -19,20 +19,14 @@ def _get_client():
 def generate_embedding(text: str) -> list:
     """Generate a vector embedding for the given text using Voyage AI."""
     client = _get_client()
-    result = client.embed(
-        [text],
-        model="voyage-finance-2",
-        input_type="document",
-    )
-    return result.embeddings[0]
+    # TODO: Call client.embed() with [text], model="voyage-finance-2", input_type="document"
+    # Return result.embeddings[0]
+    pass
 
 
 def generate_query_embedding(text: str) -> list:
     """Generate a query-optimised embedding for semantic search."""
     client = _get_client()
-    result = client.embed(
-        [text],
-        model="voyage-finance-2",
-        input_type="query",
-    )
-    return result.embeddings[0]
+    # TODO: Call client.embed() with [text], model="voyage-finance-2", input_type="query"
+    # Return result.embeddings[0]
+    pass

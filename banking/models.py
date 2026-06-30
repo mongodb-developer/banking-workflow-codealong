@@ -1,6 +1,7 @@
 from django.db import models
 
 
+# Stores uploaded banking documents with their Voyage AI vector embeddings.
 class BankingDocument(models.Model):
     DOCUMENT_TYPES = [
         ('loan_application', 'Loan Application'),
@@ -24,7 +25,7 @@ class BankingDocument(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     customer_name = models.CharField(max_length=255)
     customer_id = models.CharField(max_length=100)
-    embedding = models.JSONField(null=True, blank=True)
+    embedding = models.JSONField(null=True, blank=True)  # Voyage AI vector
     metadata = models.JSONField(default=dict, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -36,6 +37,7 @@ class BankingDocument(models.Model):
         return f"{self.get_document_type_display()}: {self.title}"
 
 
+# Auto-generated tasks linked to each document based on its type.
 class WorkflowTask(models.Model):
     TASK_TYPES = [
         ('document_review', 'Document Review'),

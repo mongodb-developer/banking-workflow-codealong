@@ -26,36 +26,20 @@ def semantic_search(
     """
     collection = _get_collection()
 
-    pipeline = [
-        {
-            "$vectorSearch": {
-                "index": "banking_embedding_index",
-                "path": "embedding",
-                "queryVector": query_embedding,
-                "numCandidates": limit * 10,
-                "limit": limit,
-            }
-        },
-        {
-            "$project": {
-                "_id": 1,
-                "title": 1,
-                "content": 1,
-                "document_type": 1,
-                "status": 1,
-                "customer_name": 1,
-                "customer_id": 1,
-                "score": {"$meta": "vectorSearchScore"},
-            }
-        },
-    ]
-
-    if document_type:
-        pipeline.insert(1, {"$match": {"document_type": document_type}})
+    # TODO: Build the $vectorSearch aggregation pipeline
+    # Stage 1 - $vectorSearch with:
+    #   index: "banking_embedding_index", path: "embedding",
+    #   queryVector: query_embedding, numCandidates: limit * 10, limit: limit
+    #
+    # Stage 2 - $project to include:
+    #   _id, title, content, document_type, status, customer_name,
+    #   customer_id, score: {"$meta": "vectorSearchScore"}
+    #
+    # If document_type is set, insert a $match stage after $vectorSearch
+    pipeline = []
 
     results = list(collection.aggregate(pipeline))
 
-    # Convert ObjectId to string for template rendering
     for doc in results:
         doc["id"] = str(doc.pop("_id"))
 

@@ -38,7 +38,7 @@ A hands-on codealong project that demonstrates how to build a banking document w
    ```
    SECRET_KEY=your-secret-key-here
    DB_ENGINE=django_mongodb_backend
-   MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net
+   MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?appName=bankflow
    DB_NAME=banking_workflow
    VOYAGE_API_KEY=your-voyage-ai-key
    ```

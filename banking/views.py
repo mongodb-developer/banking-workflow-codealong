@@ -8,6 +8,7 @@ from .services.vector_search_service import semantic_search
 from .services.rag_service import answer_query
 
 
+# Lists all documents with optional type/status filtering.
 def document_list(request):
     documents = BankingDocument.objects.all()
     doc_type = request.GET.get('type')
@@ -28,24 +29,19 @@ def document_list(request):
     return render(request, 'banking/document_list.html', context)
 
 
+
+# Handles document upload, embedding generation, and workflow task creation.
 def document_upload(request):
     if request.method == 'POST':
         form = DocumentUploadForm(request.POST)
         if form.is_valid():
             document = form.save(commit=False)
-            text_to_embed = f"{document.title}\n{document.content}"
-            indexed = True
-            try:
-                document.embedding = generate_embedding(text_to_embed)
-            except Exception as e:
-                indexed = False
-                messages.warning(request, f'Document saved but embedding generation failed: {e}')
+            # TODO: Generate embedding for the document
+            # Combine title + content, call generate_embedding(), store in document.embedding
+            # Use try/except so the document still saves if embedding fails
             document.save()
             _create_workflow_tasks(document)
-            if indexed:
-                messages.success(request, f'Document "{document.title}" uploaded and indexed successfully.')
-            else:
-                messages.info(request, f'Document "{document.title}" uploaded. Add a valid Voyage AI key to generate embeddings for semantic search.')
+            messages.success(request, f'Document "{document.title}" uploaded successfully.')
             return redirect('banking:document_list')
     else:
         form = DocumentUploadForm()
@@ -61,6 +57,8 @@ def document_detail(request, pk):
     })
 
 
+
+# Semantic search using Voyage AI embeddings + MongoDB Atlas Vector Search.
 def semantic_search_view(request):
     results = []
     form = SearchForm()
@@ -71,15 +69,15 @@ def semantic_search_view(request):
             query = form.cleaned_data['query']
             doc_type = form.cleaned_data.get('document_type') or None
             limit = form.cleaned_data.get('limit') or 5
-            try:
-                query_embedding = generate_embedding(query)
-                results = semantic_search(query_embedding, limit=limit, document_type=doc_type)
-            except Exception as e:
-                messages.error(request, f'Search failed: {e}')
+            # TODO: Generate embedding for the query, then call semantic_search()
+            # Store results in the 'results' variable
+            # Wrap in try/except and show error message on failure
 
     return render(request, 'banking/search.html', {'form': form, 'results': results})
 
 
+
+# RAG: retrieves relevant documents and builds context for the user's question.
 def rag_query_view(request):
     answer = None
     sources = []
@@ -90,12 +88,9 @@ def rag_query_view(request):
         if form.is_valid():
             question = form.cleaned_data['question']
             doc_type = form.cleaned_data.get('document_type') or None
-            try:
-                result = answer_query(question, document_type=doc_type)
-                answer = result['answer']
-                sources = result['sources']
-            except Exception as e:
-                messages.error(request, f'Query failed: {e}')
+            # TODO: Call answer_query() with question and doc_type
+            # Extract 'answer' and 'sources' from the result
+            # Wrap in try/except and show error message on failure
 
     return render(request, 'banking/rag_query.html', {
         'form': form,
@@ -118,6 +113,8 @@ def complete_task(request, pk):
     return redirect('banking:workflow_tasks')
 
 
+
+# Maps document types to workflow tasks and creates them automatically.
 def _create_workflow_tasks(document):
     task_map = {
         'loan_application': [
