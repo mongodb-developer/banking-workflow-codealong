@@ -75,3 +75,8 @@ banking/                  # Main application
 
 - **`main`** — Complete solution with all features implemented
 - **`starter`** — Skeleton with TODOs for the codealong
+
+
+UI Screenshot:
+
+<img width="2547" height="1244" alt="image" src="https://github.com/user-attachments/assets/ae003f8b-4fa6-4051-91a1-9e8c29b12a01" />
