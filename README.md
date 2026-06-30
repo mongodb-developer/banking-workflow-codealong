@@ -1,4 +1,4 @@
-# Build a Banking Workflow App Using Django, MongoDB & Voyage AI
+# Build a Banking Workflow App Using Django, MongoDB & Voyage AI (Datacamp)
 
 A hands-on codealong project that demonstrates how to build a banking document workflow application with semantic search and retrieval augmented generation (RAG).
 
