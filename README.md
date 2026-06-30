@@ -94,3 +94,8 @@ Create this index on the `banking_bankingdocument` collection in your Atlas clus
   ]
 }
 ```
+
+
+## UI Screenshot:
+
+<img width="2547" height="1244" alt="image" src="https://github.com/user-attachments/assets/dc9abdd6-6ede-40e9-a406-6df7216d8f62" />
