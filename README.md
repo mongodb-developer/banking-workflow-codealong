@@ -75,3 +75,22 @@ banking/                  # Main application
 
 - **`main`** — Complete solution with all features implemented
 - **`starter`** — Skeleton with TODOs for the codealong
+
+## Atlas Vector Search Index
+
+Create this index on the `banking_bankingdocument` collection in your Atlas cluster.
+
+**Index name:** `banking_embedding_index`
+
+```json
+{
+  "fields": [
+    {
+      "type": "vector",
+      "path": "embedding",
+      "numDimensions": 1024,
+      "similarity": "cosine"
+    }
+  ]
+}
+```
