@@ -1,0 +1,62 @@
+{% extends "banking/base.html" %}
+{% block title %}Documents — BankFlow{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Banking Documents</span>
+        <a href="{% url 'banking:document_upload' %}" class="btn btn-primary">+ Upload Document</a>
+    </div>
+
+    <!-- Filters -->
+    <form method="get" style="display:flex; gap:1rem; margin-bottom:1.25rem; flex-wrap:wrap;">
+        <select name="type" onchange="this.form.submit()" style="width:auto;">
+            <option value="">All Types</option>
+            {% for value, label in document_types %}
+                <option value="{{ value }}" {% if current_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="status" onchange="this.form.submit()" style="width:auto;">
+            <option value="">All Statuses</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        {% if current_type or current_status %}
+            <a href="{% url 'banking:document_list' %}" class="btn btn-sm" style="background:#edf3f0;color:var(--mdb-deep);">Clear</a>
+        {% endif %}
+    </form>
+
+    {% if documents %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Customer</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in documents %}
+            <tr>
+                <td><strong>{{ doc.title }}</strong></td>
+                <td>{{ doc.get_document_type_display }}</td>
+                <td>{{ doc.customer_name }}<br><small class="text-muted">{{ doc.customer_id }}</small></td>
+                <td><span class="badge badge-{{ doc.status }}">{{ doc.get_status_display }}</span></td>
+                <td>{{ doc.created_at|date:"M d, Y" }}</td>
+                <td><a href="{% url 'banking:document_detail' doc.pk %}" class="btn btn-sm btn-primary">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        <strong>No documents found.</strong>
+        <p>Upload your first document to get started.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

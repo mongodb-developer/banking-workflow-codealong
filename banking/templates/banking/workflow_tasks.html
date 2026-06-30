@@ -1,0 +1,56 @@
+{% extends "banking/base.html" %}
+{% block title %}Workflow Tasks — BankFlow{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Pending Workflow Tasks</span>
+        <span style="font-size:.85rem;color:var(--muted);">{{ tasks|length }} task{{ tasks|length|pluralize }} pending</span>
+    </div>
+
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Task</th>
+                <th>Document</th>
+                <th>Customer</th>
+                <th>Description</th>
+                <th>Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td><strong>{{ task.get_task_type_display }}</strong></td>
+                <td>
+                    <a href="{% url 'banking:document_detail' task.document.pk %}" style="text-decoration:none;">
+                        {{ task.document.title|truncatechars:40 }}
+                    </a>
+                    <div style="font-size:.75rem;color:var(--muted);">{{ task.document.get_document_type_display }}</div>
+                </td>
+                <td>
+                    {{ task.document.customer_name }}
+                    <div style="font-size:.75rem;color:var(--muted);">{{ task.document.customer_id }}</div>
+                </td>
+                <td style="font-size:.875rem;">{{ task.description }}</td>
+                <td style="font-size:.8rem;color:var(--muted);">{{ task.created_at|date:"M d, Y" }}</td>
+                <td>
+                    <form method="post" action="{% url 'banking:complete_task' task.pk %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty">
+        <strong>All tasks completed!</strong>
+        <p>Upload a new document to generate workflow tasks.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

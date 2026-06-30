@@ -1,0 +1,50 @@
+{% extends "banking/base.html" %}
+{% block title %}Document Retrieval Assistant — BankFlow{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:720px;margin:0 auto;">
+    <div class="card-header">
+        <span class="card-title">Document Retrieval Assistant</span>
+    </div>
+    <p style="margin-bottom:1.25rem;color:var(--muted);font-size:.9rem;">
+        Ask questions about your documents. Powered by <strong>Voyage AI</strong> embeddings and <strong>MongoDB Atlas Vector Search</strong>.
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.question.id_for_label }}">{{ form.question.label }}</label>
+            {{ form.question }}
+            {% if form.question.errors %}<ul class="errorlist">{% for e in form.question.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div class="form-group">
+            <label for="{{ form.document_type.id_for_label }}">{{ form.document_type.label }}</label>
+            {{ form.document_type }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Search Documents</button>
+    </form>
+</div>
+
+{% if answer %}
+<div class="card" style="max-width:720px;margin:1.5rem auto 0;">
+    <div class="card-header">
+        <span class="card-title">Retrieved Context</span>
+    </div>
+    <div style="background:var(--mdb-mint);border-left:4px solid var(--mdb-leaf);border-radius:6px;padding:1rem;white-space:pre-wrap;font-size:.9rem;line-height:1.7;">{{ answer }}</div>
+
+    {% if sources %}
+    <div style="margin-top:1.25rem;">
+        <div style="font-size:.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:.75rem;">Sources Retrieved</div>
+        {% for doc in sources %}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .75rem;background:var(--surface-soft);border-radius:6px;margin-bottom:.4rem;">
+            <div>
+            <a href="{% url 'banking:document_detail' doc.id %}" style="font-weight:600;text-decoration:none;font-size:.875rem;">{{ doc.title }}</a>
+            <span style="font-size:.78rem;color:var(--muted);margin-left:.5rem;">{{ doc.document_type }} &middot; {{ doc.customer_name }}</span>
+            </div>
+            <span class="badge badge-{{ doc.status }}">{{ doc.status }}</span>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

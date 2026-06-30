@@ -1,0 +1,81 @@
+{% extends "banking/base.html" %}
+{% block title %}{{ document.title }} — BankFlow{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">{{ document.title }}</span>
+        <a href="{% url 'banking:document_list' %}" class="link-muted">← Back to list</a>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1.25rem;">
+        <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Type</div>
+            <div style="margin-top:.25rem;font-weight:600;">{{ document.get_document_type_display }}</div>
+        </div>
+        <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Status</div>
+            <div style="margin-top:.25rem;"><span class="badge badge-{{ document.status }}">{{ document.get_status_display }}</span></div>
+        </div>
+        <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Customer</div>
+            <div style="margin-top:.25rem;font-weight:600;">{{ document.customer_name }}</div>
+            <div style="font-size:.8rem;color:var(--muted);">{{ document.customer_id }}</div>
+        </div>
+        <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Uploaded</div>
+            <div style="margin-top:.25rem;">{{ document.created_at|date:"M d, Y H:i" }}</div>
+        </div>
+        <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;">Embedding</div>
+            <div style="margin-top:.25rem;">
+                {% if document.embedding %}
+                    <span style="color:var(--mdb-forest);font-weight:600;">&#10003; Indexed</span>
+                {% else %}
+                    <span style="color:var(--danger);">&#10007; Not indexed</span>
+                    <div style="font-size:.75rem;color:var(--muted);margin-top:.2rem;">Needs a valid Voyage AI key.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="soft-panel">
+        <div style="font-size:.8rem;font-weight:600;color:var(--muted);margin-bottom:.5rem;">DOCUMENT CONTENT</div>
+        <p style="white-space:pre-wrap;font-size:.9rem;line-height:1.6;">{{ document.content }}</p>
+    </div>
+</div>
+
+<!-- Workflow Tasks -->
+<div class="card">
+    <div class="card-header">
+        <span class="card-title">Workflow Tasks</span>
+        <a href="{% url 'banking:workflow_tasks' %}" class="link-muted">View all tasks</a>
+    </div>
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr><th>Task</th><th>Description</th><th>Assigned To</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+            <tr>
+                <td><strong>{{ task.get_task_type_display }}</strong></td>
+                <td>{{ task.description }}</td>
+                <td>{{ task.assigned_to|default:"—" }}</td>
+                <td>
+                    {% if task.is_completed %}
+                        <span class="badge badge-completed">Done</span>
+                    {% else %}
+                        <span class="badge badge-pending">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <div class="empty"><strong>No tasks generated for this document.</strong></div>
+    {% endif %}
+</div>
+{% endblock %}
