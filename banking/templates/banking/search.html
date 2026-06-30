@@ -1,0 +1,62 @@
+{% extends "banking/base.html" %}
+{% block title %}Semantic Search — BankFlow{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:720px;margin:0 auto;">
+    <div class="card-header">
+        <span class="card-title">Semantic Search</span>
+    </div>
+    <p style="margin-bottom:1.25rem;color:var(--muted);font-size:.9rem;">
+        Search documents by meaning using <strong>Voyage AI</strong> embeddings and <strong>MongoDB Atlas Vector Search</strong>.
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.query.id_for_label }}">{{ form.query.label }}</label>
+            {{ form.query }}
+            {% if form.query.errors %}<ul class="errorlist">{% for e in form.query.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 120px;gap:1rem;">
+            <div class="form-group">
+                <label for="{{ form.document_type.id_for_label }}">{{ form.document_type.label }}</label>
+                {{ form.document_type }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.limit.id_for_label }}">{{ form.limit.label }}</label>
+                {{ form.limit }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Search</button>
+    </form>
+</div>
+
+{% if results %}
+<div class="card" style="max-width:720px;margin:1.5rem auto 0;">
+    <div class="card-header">
+        <span class="card-title">Results <span style="font-weight:400;color:var(--muted);">({{ results|length }})</span></span>
+    </div>
+    {% for doc in results %}
+    <div style="padding:1rem 0;border-bottom:1px solid #edf3f0;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;">
+            <div>
+                <a href="{% url 'banking:document_detail' doc.id %}" style="font-weight:600;text-decoration:none;">{{ doc.title }}</a>
+                <div style="font-size:.8rem;color:var(--muted);margin-top:.2rem;">
+                    {{ doc.document_type }} &middot; {{ doc.customer_name }} ({{ doc.customer_id }}) &middot;
+                    <span class="badge badge-{{ doc.status }}">{{ doc.status }}</span>
+                </div>
+            </div>
+            <div style="min-width:80px;text-align:right;">
+                <span style="font-size:.8rem;color:#344054;">{{ doc.score|floatformat:3 }}</span>
+                <div class="score-bar"><div class="score-fill" style="width:{{ doc.score|floatformat:0 }}0%"></div></div>
+            </div>
+        </div>
+        <p style="margin-top:.6rem;font-size:.875rem;color:#344054;line-height:1.5;">{{ doc.content|truncatechars:200 }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% elif request.method == "POST" %}
+<div class="card" style="max-width:720px;margin:1.5rem auto 0;">
+    <div class="empty"><strong>No results found.</strong><p>Try a broader query or upload more documents.</p></div>
+</div>
+{% endif %}
+{% endblock %}

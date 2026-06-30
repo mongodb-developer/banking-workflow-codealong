@@ -1,0 +1,25 @@
+{% extends "banking/base.html" %}
+{% block title %}Upload Document — BankFlow{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:680px; margin:0 auto;">
+    <div class="card-header">
+        <span class="card-title">Upload Banking Document</span>
+        <a href="{% url 'banking:document_list' %}" class="link-muted">← Back to list</a>
+    </div>
+    <p style="margin-bottom:1.25rem;color:var(--muted);font-size:.9rem;">
+        Documents are automatically embedded with <strong>Voyage AI</strong> and indexed for semantic search.
+    </p>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width:100%;padding:.7rem;">Upload &amp; Index Document</button>
+    </form>
+</div>
+{% endblock %}
